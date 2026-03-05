@@ -324,13 +324,19 @@
                 </div>
             </div>
 
-            <!-- Inquiry Form -->
+            <!-- Inquiry Form — Powered by FormSubmit.co (free, no signup needed) -->
+            <!-- How it works: form submits directly to FormSubmit, which emails the data to the address below -->
+            <!-- To change recipient: swap maxwhulme@gmail.com for the shop email (e.g. hello@flowerseller.co.uk) -->
             <div class="md:p-12 reveal-wrapper delay-200 bg-zinc-50 border-zinc-100 border rounded-sm pt-8 pr-8 pb-8 pl-8">
                 <h3 class="text-xl font-serif text-zinc-900 mb-8">Send an Inquiry</h3>
                 <form id="inquiry-form" action="https://formsubmit.co/maxwhulme@gmail.com" method="POST" class="space-y-6">
+                    <!-- FormSubmit settings -->
                     <input type="hidden" name="_subject" value="New Inquiry — The Flower Seller">
                     <input type="hidden" name="_captcha" value="false">
+                    <!-- After submitting, redirect user back to the contact section -->
                     <input type="hidden" name="_next" value="https://mh-787b.github.io/TheFlowerSeller#contact">
+                    <!-- Honeypot spam protection (hidden from real users, catches bots) -->
+                    <input type="text" name="_honey" style="display:none">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold uppercase text-zinc-500 tracking-wider">Name</label>
@@ -439,23 +445,45 @@
             });
         });
 
-        // Inquiry Form Handler
+        // Inquiry Form — submit via AJAX so the page doesn't redirect
         document.getElementById('inquiry-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = this.querySelector('[name="name"]').value;
-            const phone = this.querySelector('[name="phone"]').value;
-            const type = this.querySelector('[name="inquiry_type"]').value;
-            const message = this.querySelector('[name="message"]').value;
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
 
-            const subject = encodeURIComponent(type + ' — ' + name);
-            const body = encodeURIComponent(
-                'Name: ' + name + '\n' +
-                'Phone: ' + phone + '\n' +
-                'Inquiry Type: ' + type + '\n\n' +
-                message
-            );
+            // Show sending state
+            btn.disabled = true;
+            btnText.textContent = 'Sending...';
+            btnIcon.classList.add('hidden');
 
-            window.location.href = 'mailto:hello@flowerseller.co.uk?subject=' + subject + '&body=' + body;
+            // Send form data to FormSubmit.co via fetch
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    // Success — show confirmation and reset form
+                    btnText.textContent = 'Sent ✓';
+                    form.reset();
+                    setTimeout(function() {
+                        btnText.textContent = 'Send Message';
+                        btnIcon.classList.remove('hidden');
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch(function() {
+                // Error — let user retry
+                btnText.textContent = 'Error — Try Again';
+                btnIcon.classList.remove('hidden');
+                btn.disabled = false;
+            });
         });
 
         // Reveal Animation
