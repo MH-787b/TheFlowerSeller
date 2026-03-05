@@ -445,12 +445,45 @@
             });
         });
 
-        // Inquiry Form — disable button on submit to prevent double-sends
-        document.getElementById('inquiry-form').addEventListener('submit', function() {
-            const btn = this.querySelector('button[type="submit"]');
+        // Inquiry Form — submit via AJAX so the page doesn't redirect
+        document.getElementById('inquiry-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const btn = form.querySelector('button[type="submit"]');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+
+            // Show sending state
             btn.disabled = true;
-            document.getElementById('btn-text').textContent = 'Sending...';
-            document.getElementById('btn-icon').classList.add('hidden');
+            btnText.textContent = 'Sending...';
+            btnIcon.classList.add('hidden');
+
+            // Send form data to FormSubmit.co via fetch
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    // Success — show confirmation and reset form
+                    btnText.textContent = 'Sent ✓';
+                    form.reset();
+                    setTimeout(function() {
+                        btnText.textContent = 'Send Message';
+                        btnIcon.classList.remove('hidden');
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch(function() {
+                // Error — let user retry
+                btnText.textContent = 'Error — Try Again';
+                btnIcon.classList.remove('hidden');
+                btn.disabled = false;
+            });
         });
 
         // Reveal Animation
