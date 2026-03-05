@@ -337,14 +337,16 @@
                     <input type="hidden" name="_next" value="https://mh-787b.github.io/TheFlowerSeller#contact">
                     <!-- Honeypot spam protection (hidden from real users, catches bots) -->
                     <input type="text" name="_honey" style="display:none">
+                    <!-- Auto-set reply-to as the customer's email so you can reply directly -->
+                    <input type="hidden" name="_autoresponse" value="Thank you for your inquiry! We'll get back to you shortly. — The Flower Seller">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold uppercase text-zinc-500 tracking-wider">Name</label>
                             <input type="text" name="name" required="" class="w-full bg-white border border-zinc-200 rounded-sm py-2.5 px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors custom-input">
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-xs font-semibold uppercase text-zinc-500 tracking-wider">Phone</label>
-                            <input type="tel" name="phone" required="" class="w-full bg-white border border-zinc-200 rounded-sm py-2.5 px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors custom-input">
+                            <label class="text-xs font-semibold uppercase text-zinc-500 tracking-wider">Email</label>
+                            <input type="email" name="email" required="" class="w-full bg-white border border-zinc-200 rounded-sm py-2.5 px-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors custom-input">
                         </div>
                     </div>
                     
